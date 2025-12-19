@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jultomtes Quiz</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="snow"></div>
+
+    <main id="app">
+      <section class="page" id="page-start">
+        <h1>🎅 Jultomtes Quiz</h1>
+        <button class="primary" id="btnStart">Fortsätt</button>
+      </section>
+
+      <section class="page hidden" id="page-password">
+        <h2>Ange Jultomtes lösenord</h2>
+        <input type="password" id="passwordInput" placeholder="Lösenord" />
+        <p id="passwordError" class="error hidden">Fel lösenord</p>
+      </section>
+
+      <section class="page hidden" id="page-terms">
+        <button class="primary" id="btnToPassword">
+          Fortsätt till Jultomtes Quiz
+        </button>
+        <h1>Spelvillkor & Policy</h1>
+        <p>
+          Det här quizet är ett spel skapat för underhållning, utmaning och nöje
+          🎮🧠.
+        </p>
+        <p>
+          Målet är att ha kul, testa dina kunskaper och kanske känna spänningen
+          av att klara alla frågor.
+        </p>
+        <p>
+          För att ha chans att vinna behöver du klara ett visst antal frågor
+          korrekt. Att klara quizet innebär dock <strong>inte</strong> någon
+          garanti för vinst.
+        </p>
+
+        Säkerställ att din enhet och internetuppkoppling fungerar
+        <h2>Ansvar & teknik</h2>
+        <p>
+          Vi kan tyvärr inte ta ansvar för tekniska problem som ligger utanför
+          vår kontroll, till exempel uppkopplingsfel, buggar eller
+          kompatibilitetsproblem.
+        </p>
+
+        <p>
+          Quizet tillhandahålls i befintligt skick. I den utsträckning som
+          svensk lag tillåter ansvarar vi inte för direkta eller indirekta
+          skador, förluster eller missade möjligheter som kan uppstå i samband
+          med spelet.
+        </p>
+        <p>
+          Om något inte fungerar som tänkt – till exempel om spelet laggar,
+          kraschar eller ger fel resultat – utgår ingen ersättning.
+        </p>
+        <h2>Vinster</h2>
+        <p>
+          Eventuella vinster delas ut i befintligt skick och kan inte bytas mot
+          kontanter eller andra alternativ
+        </p>
+        <p>
+          Vi ansvarar inte för hur vinster används eller för eventuella skatter
+          eller avgifter som kan bli aktuella för vinnaren.
+        </p>
+
+        <p>Eventuella tvister avgörs på plats.</p>
+        <p>
+          Som en bonus <em>kan</em> det finnas möjlighet att vinna ett pris –
+          men låt oss vara helt tydliga:
+        </p>
+        <p>
+          Chansen att vinna är extremt liten och i praktiken nära noll. Se
+          därför vinsten som en kul extra grej, inte som något du kan räkna med.
+        </p>
+        <hr />
+        <p>Genom att spela quizet godkänner du villkoren ovanför.</p>
+        <button class="primary" id="btnToPassword">
+          Fortsätt till Jultomtes Quiz
+        </button>
+      </section>
+
+      <section class="page hidden" id="page-category">
+        <h2>Välj kategori</h2>
+        <div class="grid">
+          <button class="category" data-cat="santa">🎅 Jultomte</button>
+          <button class="category" data-cat="traditions">
+            🎄 Jultraditioner
+          </button>
+          <button class="category" data-cat="music">🎶 Julmusik</button>
+          <button class="category" data-cat="movies">🎬 Julfilmer</button>
+          <button class="category" data-cat="julIVarlden">🎬 Jul i Världen</button>
+          <button class="category adult" data-cat="adult">
+            🔞 Jultomte 18+
+          </button>
+        </div>
+      </section>
+
+      <section class="page hidden" id="page-quiz">
+        <div class="quiz-header">
+          <div id="timer">10</div>
+          <div id="progress"></div>
+        </div>
+        <h2 id="question"></h2>
+        <div id="answers" class="grid"></div>
+      </section>
+
+      <section class="page hidden" id="page-result">
+        <div id="resultImage"></div>
+        <h2 id="scoreText"></h2>
+        <div id="review"></div>
+        <button class="primary" id="btnEnd">Avsluta Quiz</button>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
