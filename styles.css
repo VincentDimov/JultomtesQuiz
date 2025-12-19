@@ -1,3 +1,7 @@
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 * {
   box-sizing: border-box;
   font-family: system-ui, sans-serif;
@@ -22,12 +26,13 @@ main {
 .page {
   width: 100%;
   max-width: 420px;
-  background: rgba(0,0,0,.35);
-  border-radius: 18px;
-  padding: 20px;
+  background: rgba(0,0,0,.4);
+  border-radius: 20px;
+  padding: 22px 18px;
   text-align: center;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
 }
+
 
 .hidden { display: none; }
 
@@ -45,9 +50,10 @@ main {
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
 }
+
 
 #page-password h2,
 #page-password input,
@@ -70,6 +76,26 @@ main {
   font-weight: 700;
 }
 
+.primary,
+.category,
+#answers button {
+  min-height: 52px;
+  font-size: 1rem;
+  touch-action: manipulation;
+}
+
+#answers button {
+  border-radius: 14px;
+  font-weight: 600;
+  padding: 14px;
+}
+
+#progress {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+
 .category.adult { background: #ffcccc; }
 
 input {
@@ -85,7 +111,20 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
 }
+
+input {
+  font-size: 1rem;
+}
+
+
+button, input {
+  font-size: 16px;
+}
+
+
 
 #timer {
   background: #ffd700;
@@ -139,6 +178,15 @@ input {
   animation-duration: 18s;
   opacity: .6;
 }
+
+@media (max-width: 480px) {
+  .snow::before,
+  .snow::after {
+    background-size: 160px 160px;
+    opacity: 0.5;
+  }
+}
+
 
 @keyframes snow {
   to { transform: translateY(120vh); }

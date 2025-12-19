@@ -2,7 +2,7 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <title>Jultomtes Quiz</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -12,7 +12,7 @@
     <main id="app">
       <section class="page" id="page-start">
         <h1>🎅 Jultomtes Quiz</h1>
-        <button class="primary" id="btnStart">Fortsätt</button>
+        <button type="button" class="primary" id="btnStart">Fortsätt</button>
       </section>
 
       <section class="page hidden" id="page-password">
@@ -22,9 +22,7 @@
       </section>
 
       <section class="page hidden" id="page-terms">
-        <button class="primary" id="btnToPassword">
-          Fortsätt till Jultomtes Quiz
-        </button>
+        
         <h1>Spelvillkor & Policy</h1>
         <p>
           Det här quizet är ett spel skapat för underhållning, utmaning och nöje
@@ -40,10 +38,12 @@
           garanti för vinst.
         </p>
 
-        Säkerställ att din enhet och internetuppkoppling fungerar
+        <p>Säkerställ att din enhet och internetuppkoppling fungerar</p>
+
         <button class="primary" id="btnToPassword">
           Fortsätt till Jultomtes Quiz
         </button>
+
         <h2>Ansvar & teknik</h2>
         <p>
           Vi kan tyvärr inte ta ansvar för tekniska problem som ligger utanför
