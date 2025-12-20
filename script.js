@@ -1,6 +1,8 @@
 // ===== ELEMENT =====
 const btnStart = document.getElementById("btnStart");
 const btnToPassword = document.getElementById("btnToPassword");
+const btnBackToSpel = document.getElementById("btnBackToSpel");
+const linkTerms = document.getElementById("linkTerms");
 const btnCheckPassword = document.getElementById("btnCheckPassword");
 const btnEnd = document.getElementById("btnEnd");
 
@@ -17,45 +19,48 @@ const reviewEl = document.getElementById("review");
 
 const pages = [
   "page-start",
-  "page-password",
+  "page-spel",
   "page-terms",
+  "page-password",
   "page-category",
   "page-quiz",
   "page-result",
 ];
 
 // ===== STATE =====
-let state = JSON.parse(localStorage.getItem("quizState")) || {
+let state = {
   page: 0,
   score: 0,
   answers: [],
   qIndex: 0,
 };
 
-function save() {
-  localStorage.setItem("quizState", JSON.stringify(state));
-}
-
-function showPage(i) {
-  pages.forEach((p, idx) =>
-    document.getElementById(p).classList.toggle("hidden", idx !== i)
-  );
-  state.page = i;
-  save();
+function showPage(index) {
+  pages.forEach((id, i) => {
+    document.getElementById(id).classList.toggle("hidden", i !== index);
+  });
+  state.page = index;
 }
 
 // ===== NAV =====
 btnStart.onclick = () => showPage(1);
 btnToPassword.onclick = () => showPage(3);
 
+linkTerms.onclick = (e) => {
+  e.preventDefault();
+  showPage(2); // spel → terms
+};
+
+btnBackToSpel.onclick = () => showPage(1);
+
 // ===== LÖSENORD LOGIK =====
 // ===== AUTOMATISK LÖSENORDSKONTROLL =====
-const correctPassword = "41263762";
+const correctPassword = "11";
 
 passwordInput.addEventListener("input", () => {
   if (passwordInput.value === correctPassword) {
     passwordError.classList.add("hidden"); // döljer felmeddelande
-    showPage(2); // går direkt till nästa sida
+    showPage(4); // går direkt till nästa sida
   } else {
     passwordError.classList.remove("hidden"); // visar felmeddelande
   }
@@ -65,7 +70,6 @@ passwordInput.addEventListener("input", () => {
 const Q = (q, options, correct) => ({ q, options, correct });
 const pick = (arr, n) => [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
 
-
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -73,7 +77,6 @@ function shuffle(array) {
   }
   return array;
 }
-
 
 // ===== FRÅGEBANK (utökad) =====
 const questionBanks = {
@@ -193,11 +196,6 @@ const questionBanks = {
         ["Franska", "Tyska", "Latin", "Svenska"],
         "Franska"
       ),
-      Q(
-        "Vilket namn har jultomtens släde i engelska sagor?",
-        ["Sleigh", "Carriage", "Wagon", "Sled"],
-        "Sleigh"
-      ),
     ],
     hard: [
       Q(
@@ -252,11 +250,28 @@ const questionBanks = {
       ),
     ],
     own: [
-      Q(
-        "Hur gammal är Jultomte?",
-        ["36år", "1755år", "163år", "225år"],
-        "1755år"
-      ),
+      Q("Hur gammal är Jultomte?", ["36år", "1755år", "163år", "225år"]),
+      Q("Hur mycket väger Jultomte?", ["114kg", "116kg", "118kg", "120kg"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Vilka saker förknippas med jultomten?", [
+        "Röd dräkt",
+        "Skägg",
+        "Släde med renar",
+        "Julklappar",
+      ]),
+      Q("Vilka platser sägs jultomten bo eller resa mellan?", [
+        "Nordpolen",
+        "Barnens hem på julafton",
+        "Tomtens verkstad",
+        "I sagor och berättelser över hela världen",
+      ]),
+      Q("Vilka är vanliga attribut eller följeslagare till jultomten?", [
+        "Renar",
+        "Tomtenissar",
+        "Sleigh bells (bjällror)",
+        "Julgransdekorationer",
+      ]),
     ],
   },
 
@@ -271,7 +286,7 @@ const questionBanks = {
       ),
       Q(
         "Vad pyntar man vid jul?",
-        ["Julgran", "Påskris", "Pumpor", "Blommor"],
+        ["Julgran", "Hus", "Fru", "Köket"],
         "Julgran"
       ),
       Q(
@@ -281,23 +296,23 @@ const questionBanks = {
       ),
       Q(
         "Vad heter julens kalender?",
-        ["Julkalender", "Skördekalendar", "Vårkalender", "Sommarkalender"],
+        ["Julkalender", "Skördekalendar", "Tomteskalender", "Decemberkalender"],
         "Julkalender"
       ),
       Q(
         "Vilken dryck är traditionellt julig i Sverige?",
-        ["Julmust", "Cola", "Öl", "Te"],
+        ["Julmust", "Jägermeister", "Öl", "Glögg"],
         "Julmust"
       ),
       Q(
         "Vilken kaka är vanlig till jul?",
-        ["Pepparkakor", "Chokladkaka", "Sockerkaka", "Muffins"],
+        ["Pepparkakor", "Chokladkaka", "Sockerkaka", "Kladdkaka"],
         "Pepparkakor"
       ),
       Q("Hur många adventsöndagar finns det?", ["4", "2", "6", "8"], "4"),
       Q(
         "Vilken frukt är vanlig i julpynt?",
-        ["Apelsin", "Banan", "Äpple", "Melon"],
+        ["Apelsin", "Äpple", "Melon", "Clementin"],
         "Apelsin"
       ),
       Q(
@@ -312,13 +327,18 @@ const questionBanks = {
       ),
       Q(
         "Vad lägger man under kudden på julafton i vissa traditioner?",
-        ["Risgryn", "Strumpa", "Kudde", "Legetet"],
+        ["Risgryn", "Socker", "Tand", "Peppar"],
         "Risgryn"
       ),
       Q(
         "Vilket djur är symbol för julbocken?",
-        ["Get", "Ren", "Häst", "Ko"],
+        ["Get", "Ren", "Häst", "Tjur"],
         "Get"
+      ),
+      Q(
+        "Vad kallas julfirande på engelska?",
+        ["Christmas", "Halloween", "Easter", "Thanksgiving"],
+        "Christmas"
       ),
     ],
     medium: [
@@ -329,12 +349,12 @@ const questionBanks = {
       ),
       Q(
         "Vilket datum är luciadagen?",
-        ["13 dec", "24 dec", "6 jan", "1 dec"],
+        ["13 dec", "23 dec", "20 dec", "1 dec"],
         "13 dec"
       ),
       Q(
         "Vilken tradition har svensk julfirande med ljus och sång?",
-        ["Lucia", "Halloween", "Valborg", "Midsommar"],
+        ["Lucia", "Halloween", "Trettondedagen", "Nytt År"],
         "Lucia"
       ),
       Q(
@@ -344,23 +364,18 @@ const questionBanks = {
       ),
       Q(
         "Vilken rätt är traditionell på julbord?",
-        ["Julskinka", "Pizza", "Hamburgare", "Sushi"],
+        ["Julskinka", "Lax", "Sill", "Prinskorv"],
         "Julskinka"
       ),
       Q(
         "Vilken jultradition kommer från Tyskland?",
-        ["Julgran", "Tomteparad", "Julkorv", "Julkor"],
+        ["Julgran", "Tomteparad", "Julkorv", "Julskinka"],
         "Julgran"
       ),
       Q(
         "Vilket land gav julgranen till Sverige?",
         ["Tyskland", "Frankrike", "USA", "Spanien"],
         "Tyskland"
-      ),
-      Q(
-        "Vad kallas julfirande på engelska?",
-        ["Christmas", "Halloween", "Easter", "Thanksgiving"],
-        "Christmas"
       ),
       Q(
         "Vilken dag firas trettondedag?",
@@ -374,19 +389,24 @@ const questionBanks = {
       ),
       Q(
         "Vad är 'glögg'?",
-        ["Kryddat vin", "Juice", "Kaffe", "Mjölk"],
+        ["Kryddat vin", "Stark sprit", "Brännvin", "Tinktur"],
         "Kryddat vin"
       ),
       Q(
         "Vilken julfrukt är vanlig i dessert?",
-        ["Risgrynsgröt", "Banan", "Äpple", "Kiwi"],
+        ["Risgrynsgröt", "Päron", "Äpple", "Apelsin"],
         "Risgrynsgröt"
       ),
     ],
     hard: [
       Q(
         "Vilken förkristen midvinterfest firades innan jul?",
-        ["Midvinterblot", "Yule", "Saturnalia", "Lammas"],
+        [
+          "Midvinterblot",
+          "Midvinteryule",
+          "Midvintersaturnalia",
+          "Midvinterlammas",
+        ],
         "Midvinterblot"
       ),
       Q(
@@ -401,8 +421,8 @@ const questionBanks = {
       ),
       Q(
         "Vad betyder 'Yule' i fornnordisk tradition?",
-        ["Jul", "Sommar", "Vår", "Skörd"],
-        "Jul"
+        ["Julfest", "Vintersolstånd", "Festligheter", "Gåvoutdelning"],
+        "Julfest"
       ),
       Q(
         "Vilket land populariserade pepparkakshus?",
@@ -426,11 +446,28 @@ const questionBanks = {
       ),
     ],
     own: [
-      Q(
-        "Hur gammal är Jultomte?",
-        ["36år", "1755år", "163år", "225år"],
-        "1755år"
-      ),
+      Q("Hur gammal är Jultomte?", ["36år", "1755år", "163år", "225år"]),
+      Q("Hur mycket väger Jultomte?", ["114kg", "116kg", "118kg", "120kg"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Vilka saker förknippas med jultomten?", [
+        "Röd dräkt",
+        "Skägg",
+        "Släde med renar",
+        "Julklappar",
+      ]),
+      Q("Vilka platser sägs jultomten bo eller resa mellan?", [
+        "Nordpolen",
+        "Barnens hem på julafton",
+        "Tomtens verkstad",
+        "I sagor och berättelser över hela världen",
+      ]),
+      Q("Vilka är vanliga attribut eller följeslagare till jultomten?", [
+        "Renar",
+        "Tomtenissar",
+        "Sleigh bells (bjällror)",
+        "Julgransdekorationer",
+      ]),
     ],
   },
   // ---------------------------------------------------
@@ -439,16 +476,30 @@ const questionBanks = {
     easy: [
       Q(
         "Är 'Stilla natt' en julsång?",
-        ["Ja", "Nej", "Vet ej", "Ibland"],
-        "Ja"
+        [
+          "Ja, en klassisk julsång",
+          "Nej, det är en vanlig visa",
+          "Traditionell vinter sång",
+          "Folkets låt",
+        ],
+        "Ja, en klassisk julsång"
       ),
-      Q("Sjungs julsånger på jul?", ["Ja", "Nej", "Aldrig", "Sällan"], "Ja"),
+
       Q(
         "Vad kallas julmusik?",
-        ["Julsånger", "Opera", "Jazz", "Rock"],
+        ["Julsånger", "Julmusik", "Julmelodier", "Julsångssamlingar"],
         "Julsånger"
       ),
-      Q("Är 'Bjällerklang' en julsång?", ["Ja", "Nej", "Påsk", "Sommar"], "Ja"),
+      Q(
+        "Vilken typ av sång är 'Bjällerklang'?",
+        [
+          "En klassisk julsång",
+          "En melodi man sjunger på jul",
+          "Traditionell julsång",
+          "Känd julsång för barn",
+        ],
+        "En klassisk julsång"
+      ),
       Q(
         "Vilken artist sjöng 'Last Christmas'?",
         ["Wham!", "Queen", "ABBA", "U2"],
@@ -456,23 +507,23 @@ const questionBanks = {
       ),
       Q(
         "Vilket instrument används ofta i julmusik?",
-        ["Klockor", "Trummor", "Bas", "Gitarr"],
+        ["Klockor", "Trummor", "Fiol", "Gitarr"],
         "Klockor"
       ),
       Q(
         "Vilken genre är 'O helga natt'?",
-        ["Psalm", "Opera", "Jazz", "Rock"],
+        ["Psalm", "Opera", "Sonat", "Molett"],
         "Psalm"
       ),
       Q(
         "Vilken sång börjar med 'Nu tändas tusen juleljus'?",
         [
-          "Svensk julsång",
-          "Engelsk julsång",
-          "Amerikansk julsång",
-          "Tysk julsång",
+          "Svensk julsång, sjungs under julen",
+          "Känd julsång i Sverige",
+          "Traditionell julmelodi",
+          "Sång man ofta sjunger i december",
         ],
-        "Svensk julsång"
+        "Svensk julsång, sjungs under julen"
       ),
       Q(
         "Vilket språk skrevs 'Silent Night' ursprungligen på?",
@@ -490,9 +541,14 @@ const questionBanks = {
         "Bjällerklang"
       ),
       Q(
-        "Är 'White Christmas' en julklassiker?",
-        ["Ja", "Nej", "Vet ej", "Ibland"],
-        "Ja"
+        "Vilken klassisk sång förknippas starkast med julen trots att den handlar om vinterns nostalgi?",
+        [
+          "White Christmas",
+          "Jingle Bells",
+          "Silent Night",
+          "Frosty the Snowman",
+        ],
+        "White Christmas"
       ),
       Q(
         "Vilken tonart är typisk för traditionell julsång?",
@@ -543,7 +599,7 @@ const questionBanks = {
       ),
       Q(
         "Vilken musikstil har 'Carol of the Bells'?",
-        ["Klassisk", "Jazz", "Rock", "Pop"],
+        ["Klassisk", "Symfoni", "Musikal", "Pop"],
         "Klassisk"
       ),
       Q(
@@ -562,14 +618,14 @@ const questionBanks = {
         "Klockor"
       ),
       Q(
-        "Vilken julvisa börjar med 'Gläns över sjö och strand'?",
+        "Vem skrev den klassiska svenska julsången 'Gläns över sjö och strand'?",
         [
-          "Svensk julsång",
-          "Silent Night",
-          "Bjällerklang",
-          "Nu tändas tusen juleljus",
+          "Alice Tegnér", // Fel, skrev andra barn- och julsånger
+          "Zacharias Topelius", // Rätt, skrev texten
+          "Evert Taube", // Fel, känd svensk visförfattare
+          "Carl Michael Bellman", // Fel, äldre svensk vispoet
         ],
-        "Gläns över sjö och strand"
+        "Zacharias Topelius"
       ),
     ],
     hard: [
@@ -621,11 +677,28 @@ const questionBanks = {
       ),
     ],
     own: [
-      Q(
-        "Hur gammal är Jultomte?",
-        ["36år", "1755år", "163år", "225år"],
-        "1755år"
-      ),
+      Q("Hur gammal är Jultomte?", ["36år", "1755år", "163år", "225år"]),
+      Q("Hur mycket väger Jultomte?", ["114kg", "116kg", "118kg", "120kg"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Vilka saker förknippas med jultomten?", [
+        "Röd dräkt",
+        "Skägg",
+        "Släde med renar",
+        "Julklappar",
+      ]),
+      Q("Vilka platser sägs jultomten bo eller resa mellan?", [
+        "Nordpolen",
+        "Barnens hem på julafton",
+        "Tomtens verkstad",
+        "I sagor och berättelser över hela världen",
+      ]),
+      Q("Vilka är vanliga attribut eller följeslagare till jultomten?", [
+        "Renar",
+        "Tomtenissar",
+        "Sleigh bells (bjällror)",
+        "Julgransdekorationer",
+      ]),
     ],
   },
 
@@ -633,67 +706,92 @@ const questionBanks = {
   // 🎬 JULFILMER
   movies: {
     easy: [
-  Q(
-    "Vilken film handlar om en pojke som försvarar sitt hem mot inbrottstjuvar under julen?",
-    ["Ensam hemma", "Home Alone 2", "Elf", "Frosty the Snowman"],
-    "Ensam hemma"
-  ),
-  Q(
-    "Vilken julfilm har en grön figur som hatar julen?",
-    ["Grinchen", "Love Actually", "Polar Express", "Elf"],
-    "Grinchen"
-  ),
-  Q(
-    "I vilken film åker barn på ett magiskt tåg till Nordpolen?",
-    ["Polar Express", "Home Alone", "The Holiday", "Frosty the Snowman"],
-    "Polar Express"
-  ),
-  Q(
-    "Vilken film handlar om en vuxen man som växt upp på Nordpolen och tror han är en tomte?",
-    ["Elf", "Grinchen", "Love Actually", "The Holiday"],
-    "Elf"
-  ),
-  Q(
-    "Vilken film är en romantisk komedi som utspelar sig under julen i London?",
-    ["Love Actually", "Home Alone", "Elf", "The Holiday"],
-    "Love Actually"
-  ),
-  Q(
-    "Vilken film bygger på Charles Dickens klassiska julberättelse?",
-    ["A Christmas Carol", "Home Alone", "Polar Express", "Grinchen"],
-    "A Christmas Carol"
-  ),
-  Q(
-    "Vilken film innehåller karaktären Kevin McCallister?",
-    ["Home Alone", "Elf", "Polar Express", "The Holiday"],
-    "Home Alone"
-  ),
-  Q(
-    "Vilken film är animerad och handlar om en snögubbe som kommer till liv?",
-    ["Frosty the Snowman", "Polar Express", "Home Alone", "Elf"],
-    "Frosty the Snowman"
-  ),
-  Q(
-    "Vilken film handlar om en pojke som försöker få tillbaka sin familj efter att de åkt på semester utan honom?",
-    ["Home Alone 2: Lost in New York", "Home Alone", "Elf", "The Holiday"],
-    "Home Alone 2: Lost in New York"
-  ),
-  Q(
-    "I vilken film försöker en kvinna byta hus med en annan kvinna under julen?",
-    ["The Holiday", "Love Actually", "Grinchen", "Elf"],
-    "The Holiday"
-  ),
-  Q(
-    "Vilken film handlar om Rudolf med den röda mulen?",
-    ["Rudolph the Red-Nosed Reindeer", "Frosty the Snowman", "Polar Express", "Elf"],
-    "Rudolph the Red-Nosed Reindeer"
-  ),
-  Q(
-    "Vilken film utspelar sig mestadels på Nordpolen med tomtar som jobbar?",
-    ["Elf", "Polar Express", "Home Alone", "The Holiday"],
-    "Elf"
-  ),
-],
+      Q(
+        "Vilken julfilm handlar om en pojke som blir lämnad ensam hemma och måste försvara huset mot inbrottstjuvar?",
+        [
+          "Ensam hemma",
+          "En jul att minnas",
+          "Miraklet i New York",
+          "Tomten kommer till stan",
+        ],
+        "Ensam hemma"
+      ),
+      Q(
+        "Vilken julfilm har en grön figur som hatar julen?",
+        ["Grinchen", "Hulk", "Shrek", "Elf"],
+        "Grinchen"
+      ),
+      Q(
+        "I vilken film åker barn på ett magiskt tåg till Nordpolen?",
+        [
+          "Polar Express",
+          "Tåg till Santa Fe",
+          "The Christmas Train",
+          "Mickey’s Magical Christmas Train",
+        ],
+        "Polar Express"
+      ),
+      Q(
+        "Vilken film handlar om en vuxen man som växt upp på Nordpolen och tror han är en tomte?",
+        ["Elf", "Grinchen", "Love Actually", "The Holiday"],
+        "Elf"
+      ),
+      Q(
+        "Vilken film är en romantisk komedi som utspelar sig under julen i London?",
+        ["Love Actually", "Home Alone", "Elf", "The Holiday"],
+        "Love Actually"
+      ),
+      Q(
+        "Vilken film bygger på Charles Dickens klassiska julberättelse?",
+        [
+          "A Christmas Carol",
+          "The Muppet Christmas Carol",
+          "Scrooge",
+          "Christmas with the Kranks",
+        ],
+        "A Christmas Carol"
+      ),
+      Q(
+        "Vilken film innehåller karaktären Kevin McCallister?",
+        ["Home Alone", "Elf", "Polar Express", "The Holiday"],
+        "Home Alone"
+      ),
+      Q(
+        "Vilken film är animerad och handlar om en snögubbe som kommer till liv?",
+        [
+          "Frosty the Snowman",
+          "Snow Buddies",
+          "The Polar Express",
+          "Rise of the Guardians",
+        ],
+        "Frosty the Snowman"
+      ),
+      Q(
+        "Vilken film handlar om en pojke som försöker få tillbaka sin familj efter att de åkt på semester utan honom?",
+        ["Home Alone 2: Lost in New York", "Home Alone", "Elf", "The Holiday"],
+        "Home Alone 2: Lost in New York"
+      ),
+      Q(
+        "I vilken film försöker en kvinna byta hus med en annan kvinna under julen?",
+        ["The Holiday", "Love Actually", "Serendipity", "Last Christmas"],
+        "The Holiday"
+      ),
+      Q(
+        "Vilken film handlar om tomtens hjälpteam som levererar julklappar med högteknologi?",
+        [
+          "Arthur Christmas",
+          "Santa Claus Is Comin' to Town",
+          "Elf",
+          "The Grinch",
+        ],
+        "Arthur Christmas"
+      ),
+      Q(
+        "Vilken film utspelar sig mestadels på Nordpolen med tomtar som jobbar?",
+        ["Elf", "Polar Express", "Arthur Christmas", "The Holiday"],
+        "Elf"
+      ),
+    ],
     medium: [
       Q(
         "Vilket år släpptes 'Ensam hemma'?",
@@ -717,12 +815,12 @@ const questionBanks = {
       ),
       Q("Vilket år släpptes 'Elf'?", ["2003", "2000", "2005", "2008"], "2003"),
       Q(
-        "Vilken film innehåller 'Rudolph'?",
+        "Vilken julfilm handlar om den ensamstående renen som blir en hjälte tack vare sin lysande mul?",
         [
           "Rudolph the Red-Nosed Reindeer",
-          "Home Alone",
-          "Elf",
-          "The Polar Express",
+          "Prancer",
+          "The Year Without a Santa Claus",
+          "Santa Claus is Comin’ to Town",
         ],
         "Rudolph the Red-Nosed Reindeer"
       ),
@@ -732,19 +830,34 @@ const questionBanks = {
         "Will Ferrell"
       ),
       Q(
-        "Vilken film handlar om ett juligt tåg?",
-        ["Polar Express", "Home Alone", "Elf", "Grinchen"],
-        "Polar Express"
+        "Vilken svensk julfilm handlar om en pojke som får uppleva julens magi i staden?",
+        [
+          "Sunes jul",
+          "Kan du vissla Johanna?",
+          "Pelle Svanslös i Jul",
+          "Himmel och pannkaka",
+        ],
+        "Sunes jul"
       ),
       Q(
-        "Vilken film har Mr. Bean i julscen?",
-        ["Mr. Bean's Holiday", "Love Actually", "Elf", "Home Alone"],
-        "Mr. Bean's Holiday"
+        "Vilken svensk julfilm är animerad och bygger på Astrid Lindgrens berättelser?",
+        [
+          "Pelle Svanslös i Jul",
+          "Sunes jul",
+          "Kan du vissla Johanna?",
+          "Himmel och pannkaka",
+        ],
+        "Pelle Svanslös i Jul"
       ),
       Q(
-        "Vilken julfilm är animerad?",
-        ["Frosty the Snowman", "Home Alone", "Elf", "Grinchen"],
-        "Frosty the Snowman"
+        "Vilken svensk klassisk julfilm handlar om barn och julfirande i 1960-talets Stockholm?",
+        [
+          "Kan du vissla Johanna?",
+          "Sunes jul",
+          "Pelle Svanslös i Jul",
+          "Himmel och pannkaka",
+        ],
+        "Kan du vissla Johanna?"
       ),
       Q(
         "Vilken film handlar om julklappar som glöms hemma?",
@@ -764,7 +877,7 @@ const questionBanks = {
         "Dr. Seuss"
       ),
       Q(
-        "Vilket år publicerades boken?",
+        "Vilket år publicerades boken Dr. Seuss?",
         ["1957", "1940", "1970", "1930"],
         "1957"
       ),
@@ -774,29 +887,44 @@ const questionBanks = {
         "Tom Hanks"
       ),
       Q(
-        "Vilken julfilm har karaktären Kevin McCallister?",
-        ["Home Alone", "Elf", "Grinchen", "Polar Express"],
-        "Home Alone"
-      ),
-      Q(
-        "Vilken julfilm innehåller 'Stealers Will'?",
-        ["Home Alone 2", "Home Alone", "Elf", "The Polar Express"],
-        "Home Alone 2"
-      ),
-      Q(
-        "Vilken julfilm regisserades av Chris Columbus?",
-        ["Home Alone", "Elf", "Grinchen", "The Polar Express"],
-        "Home Alone"
-      ),
-      Q(
-        "Vilken film släpptes 1965 med animerad Rudolph?",
+        "Vilken julfilm handlar om lilla Ida som vill se tomten?",
         [
-          "Rudolph the Red-Nosed Reindeer",
-          "Frosty the Snowman",
-          "Home Alone",
-          "Elf",
+          "Kan du vissla Johanna?",
+          "Sunes jul",
+          "Pippi Långstrump på jul",
+          "Julkalendern 1992",
         ],
-        "Rudolph the Red-Nosed Reindeer"
+        "Kan du vissla Johanna?"
+      ),
+      Q(
+        "I vilken julfilm försöker Lilla Anna och Långa Farbrorn fixa julklappar?",
+        [
+          "Tomten är far till alla barnen",
+          "Julkalendern 1990",
+          "Pelle Svanslös",
+          "Sunes jul",
+        ],
+        "Sunes jul"
+      ),
+      Q(
+        "Vilken julfilm regisserades av Hasse Alfredson?",
+        [
+          "Kan du vissla Johanna?",
+          "Sällskapsresan",
+          "Tomten är far till alla barnen",
+          "Pelle Svanslös",
+        ],
+        "Kan du vissla Johanna?"
+      ),
+      Q(
+        "Vilken julfilm från 1960-talet innehåller julmusik med 'Nu tändas tusen juleljus'?",
+        [
+          "Kan du vissla Johanna?",
+          "Sunes jul",
+          "Pippi Långstrump på jul",
+          "Tomten är far till alla barnen",
+        ],
+        "Kan du vissla Johanna?"
       ),
       Q(
         "Vilken film handlar om ett julfirande i England?",
@@ -805,376 +933,546 @@ const questionBanks = {
       ),
     ],
     own: [
-      Q(
-        "Hur gammal är Jultomte?",
-        ["36år", "1755år", "163år", "225år"],
-        "1755år"
-      ),
+      Q("Hur gammal är Jultomte?", ["36år", "1755år", "163år", "225år"]),
+      Q("Hur mycket väger Jultomte?", ["114kg", "116kg", "118kg", "120kg"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Vilka saker förknippas med jultomten?", [
+        "Röd dräkt",
+        "Skägg",
+        "Släde med renar",
+        "Julklappar",
+      ]),
+      Q("Vilka platser sägs jultomten bo eller resa mellan?", [
+        "Nordpolen",
+        "Barnens hem på julafton",
+        "Tomtens verkstad",
+        "I sagor och berättelser över hela världen",
+      ]),
+      Q("Vilka är vanliga attribut eller följeslagare till jultomten?", [
+        "Renar",
+        "Tomtenissar",
+        "Sleigh bells (bjällror)",
+        "Julgransdekorationer",
+      ]),
     ],
   },
 
-julIVarlden: {
-  easy: [
-    Q("Vilket land är känt för att ha uppfunnit julgranen?", ["Tyskland", "Sverige", "USA", "Frankrike"], "Tyskland"),
-    Q("I vilket land firar man 'Dia de la Virgen de Guadalupe' i december?", ["Mexiko", "Spanien", "Italien", "Argentina"], "Mexiko"),
-    Q("Vilken dryck är traditionellt populär i Sverige under jul?", ["Julmust", "Cola", "Te", "Öl"], "Julmust"),
-    Q("Vilken typ av figur är 'Jultomten' inspirerad av?", ["Sankt Nikolaus", "Oden", "Platon", "Santa Lucia"], "Sankt Nikolaus"),
-    Q("Vilket datum firas julafton i de flesta europeiska länder?", ["24 december", "25 december", "31 december", "6 januari"], "24 december"),
-    Q("I vilket land är julbocken en tradition?", ["Sverige", "USA", "Tyskland", "Frankrike"], "Sverige"),
-    Q("Vilket land är känt för att äta KFC på jul?", ["Japan", "USA", "Sverige", "England"], "Japan"),
-    Q("Vilket land firar 'Las Posadas' på julafton?", ["Mexiko", "Spanien", "Italien", "Chile"], "Mexiko"),
-    Q("Vilken nordisk julfigur kallas 'Joulupukki'?", ["Jultomten", "Tomtenisse", "Santa Lucia", "Father Christmas"], "Jultomten"),
-    Q("Vilket land firar 'Fête de Saint Nicolas' i början av december?", ["Belgien", "USA", "Tyskland", "Frankrike"], "Belgien"),
-    Q("Vilken frukt är traditionell som dekoration i jul i Tyskland?", ["Apelsin", "Banan", "Äpple", "Melon"], "Apelsin"),
-    Q("Vilket land firar Saint Lucia-dagen den 13 december?", ["Sverige", "Finland", "Tyskland", "Norge"], "Sverige")
-  ],
-  medium: [
-    Q("I vilket land är 'Réveillon' en stor julmiddag på julafton?", ["Frankrike", "USA", "Tyskland", "Sverige"], "Frankrike"),
-    Q("Vilket land är kända för att dekorera sina hem med ljus hela december?", ["USA", "Spanien", "Italien", "Sverige"], "USA"),
-    Q("Vilket datum firas Saint Lucia-dagen i Sverige?", ["13 december", "24 december", "6 januari", "25 december"], "13 december"),
-    Q("Vilket land är känt för 'Julpanettone'?", ["Italien", "Frankrike", "Tyskland", "USA"], "Italien"),
-    Q("Vilken nationell julsång har texten 'Stilla natt'?", ["Österrike", "Tyskland", "Sverige", "Frankrike"], "Österrike"),
-    Q("I vilket land är 'Secret Santa'-gåvor vanliga?", ["USA", "Sverige", "Tyskland", "Storbritannien"], "USA"),
-    Q("Vilket land firar 'Nochebuena' på julafton?", ["Spanien", "Frankrike", "USA", "Tyskland"], "Spanien"),
-    Q("Vilken typ av dekoration är typisk i Filippinerna under jul?", ["Parol-lampor", "Julgranskulor", "Ljusslingor", "Kransar"], "Parol-lampor"),
-    Q("Vilken nordisk jultradition inkluderar att tända fyra ljus under fyra söndagar före jul?", ["Advent", "Lucia", "Julbock", "Midsommar"], "Advent"),
-    Q("Vilket land firar 'Little Christmas' den 6 januari?", ["Irland", "USA", "Sverige", "Frankrike"], "Irland"),
-    Q("Vilket land skickade julkort redan från 1840-talet?", ["Storbritannien", "USA", "Tyskland", "Frankrike"], "Storbritannien"),
-    Q("Vilket land introducerade adventskalendern?", ["Tyskland", "Österrike", "Sverige", "Danmark"], "Tyskland")
-  ],
-  hard: [
-    Q("Vilket år infördes julfirande officiellt i Sverige?", ["1600-talet", "1700-talet", "1800-talet", "1500-talet"], "1600-talet"),
-    Q("Vilket land har traditionen att 'dra julbocken genom byn'?", ["Sverige", "Norge", "Finland", "Danmark"], "Sverige"),
-    Q("Vilket land har traditionen med 'Julgröt med mandel', där vinnaren får en present?", ["Sverige", "Finland", "Tyskland", "Österrike"], "Sverige"),
-    Q("Vilket land firar jul med fyrverkerier vid midnatt?", ["Filippinerna", "Frankrike", "Sverige", "USA"], "Filippinerna"),
-    Q("I vilket land används en stor julkrubba som offentlig dekoration?", ["Italien", "Spanien", "Portugal", "Tyskland"], "Italien"),
-    Q("Vilket land kallar tomten 'Père Noël'?", ["Frankrike", "Belgien", "Kanada", "Sverige"], "Frankrike"),
-    Q("Vilket land kallar tomten 'Santa Claus'?", ["USA", "Storbritannien", "Tyskland", "Finland"], "USA"),
-    Q("Vilket land är kända för 'Julbelysning av hus' som tävling?", ["USA", "Tyskland", "Norge", "Sverige"], "USA"),
-    Q("Vilket land firar 'Little Christmas' den 6 januari?", ["Irland", "USA", "Sverige", "Frankrike"], "Irland"),
-    Q("Vilket land skickade julkort redan från 1840-talet?", ["Storbritannien", "USA", "Tyskland", "Frankrike"], "Storbritannien"),
-    Q("Vilket land introducerade adventskalendern?", ["Tyskland", "Österrike", "Sverige", "Danmark"], "Tyskland"),
-    Q("Vilket land firar med 'Julbock' och sätter upp jättelika halmbockar i städer?", ["Sverige", "Finland", "Norge", "Danmark"], "Sverige"),
-  ],
-  own: [
+  julIVarlden: {
+    easy: [
       Q(
-        "Hur gammal är Jultomte?",
-        ["36år", "1755år", "163år", "225år"],
-        "1755år"
+        "Vilket land är känt för att ha uppfunnit julgranen?",
+        ["Tyskland", "Sverige", "USA", "Frankrike"],
+        "Tyskland"
+      ),
+      Q(
+        "I vilket land firar man 'Dia de la Virgen de Guadalupe' i december?",
+        ["Mexiko", "Spanien", "Italien", "Argentina"],
+        "Mexiko"
+      ),
+      Q(
+        "Vilken dryck är traditionellt populär i Sverige under jul?",
+        ["Julmust", "Brännvin", "Glögg", "Jägermeister"],
+        "Julmust"
+      ),
+      Q(
+        "Vilken typ av figur är 'Jultomten' inspirerad av?",
+        ["Sankt Nikolaus", "Oden", "Platon", "Santa Lucia"],
+        "Sankt Nikolaus"
+      ),
+      Q(
+        "Vilket datum firas julafton i de flesta europeiska länder?",
+        ["24 december", "25 december", "31 december", "6 januari"],
+        "24 december"
+      ),
+      Q(
+        "I vilket land är julbocken en tradition?",
+        ["Sverige", "USA", "Tyskland", "Frankrike"],
+        "Sverige"
+      ),
+      Q(
+        "Vilket land är känt för att äta KFC på jul?",
+        ["Japan", "USA", "Sverige", "England"],
+        "Japan"
+      ),
+      Q(
+        "Vilket land firar 'Las Posadas' på julafton?",
+        ["Mexiko", "Spanien", "Italien", "Chile"],
+        "Mexiko"
+      ),
+      Q(
+        "Vilken nordisk julfigur kallas 'Joulupukki'?",
+        ["Jultomten", "Tomtenisse", "Santa Lucia", "Ren"],
+        "Jultomten"
+      ),
+      Q(
+        "Vilket land firar 'Fête de Saint Nicolas' i början av december?",
+        ["Belgien", "USA", "Tyskland", "Frankrike"],
+        "Belgien"
+      ),
+      Q(
+        "Vilken frukt är traditionell som dekoration i jul i Tyskland?",
+        ["Apelsin", "Päron", "Clementin", "Melon"],
+        "Apelsin"
+      ),
+      Q(
+        "Vilket land firar Saint Lucia-dagen den 13 december?",
+        ["Sverige", "Finland", "Tyskland", "Norge"],
+        "Sverige"
       ),
     ],
-},
-
-  // ---------------------------------------------------
-  // 🔞 JULTOMTE 18+
-  adult: {
-    easy: [
-    Q(
-      "Vad gör tomten när renarna strejkar?",
-      ["Erbjuder dem glögg 🍷", "Lockar med pepparkakor 🍪", "Hotar med kramar 😘", "Låter dem ta semester 🏖✅"],
-      "Låter dem ta semester 🏖"
-    ),
-    Q(
-      "Vad gillar tomten mest med vuxenfester?",
-      ["Att dansa salsa 💃", "Gratis snacks 🍫", "Att gömma paket under soffan 😏", "Sjunga karaoke 🎤"],
-      "Att gömma paket under soffan 😏"
-    ),
-    Q(
-      "Vilken dryck är tomtens guilty pleasure?",
-      ["Ägglikör 🥚", "Mjölk 🥛", "Julmust 🥤", "Kaffe med chili ☕🌶"],
-      "Ägglikör 🥚"
-    ),
-    Q(
-      "Vad gör tomten när han inte hittar sin mössa?",
-      ["Gråter 😭", "Låtsas vara hipster 😎", "Lånar renarnas horn 🦌", "Skriver klagomail ✉️"],
-      "Låtsas vara hipster 😎"
-    ),
-    Q(
-      "Vad händer om tomten dricker för mycket glögg?",
-      ["Han blir röd i ansiktet ❤️", "Somnar i skorstenen 😴", "Dansar på bordet 💃", "Blir extra snäll 😇"],
-      "Somnar i skorstenen 😴"
-    ),
-    Q(
-      "Hur håller tomten sig i form?",
-      ["Snowboard 🏂", "Dansar runt granen 🎄", "Lyfter paket 🎁", "Joggar med renar 🦌"],
-      "Dansar runt granen 🎄"
-    ),
-    Q(
-      "Vad lämnar tomten oftast efter sig på en vuxenfest?",
-      ["Kramar 😘", "Mystiska lappar med hemligheter 📝😏", "Snacks 🍪", "Glittrigt konfetti ✨"],
-      "Kramar 😘"
-    ),
-    Q(
-      "Vad gör tomten om han blir kär på festen?",
-      ["Skickar brev 💌", "Bjuder på pepparkakor 🍪", "Dansar med renar 🦌", "Ritar hjärtan på paketen ❤️"],
-      "Bjuder på pepparkakor 🍪"
-    ),
-    Q(
-      "Hur vet man att tomten varit på afterwork?",
-      ["Släden står felvänd 🛷", "Renarna sjunger karaoke 🎤", "Han lämnar glittrigt glitter ✨", "Alla får extra paket 🎁"],
-      "Han lämnar glittrigt glitter ✨"
-    ),
-    Q(
-      "Vilken musik får tomten att tappa kontrollen?",
-      ["Jingle Bell Rock 🎸", "Klassisk 🎼", "Opera 🎭", "Jazz 🎷"],
-      "Jingle Bell Rock 🎸"
-    ),
-    Q(
-      "Vad använder tomten för att locka gäster?",
-      ["Julskinka 🐖", "Glögg 🍷", "Humor 😏", "Renar 🦌"],
-      "Humor 😏"
-    ),
-    Q(
-      "Vilket är tomtens partytrick?",
-      ["Dansar på bordet 💃", "Trolleri 🪄", "Sjunger karaoke 🎤", "Bygger paketborg 🏰"],
-      "Dansar på bordet 💃"
-    ),
-    Q(
-      "Vad är tomtens hemliga superkraft på fester?",
-      ["Osynlighet 👻", "Flygning ✈️", "Superstyrka 💪", "Teleportering 🌀"],
-      "Osynlighet 👻"
-    ),
-    Q(
-      "Vad tycker tomten om på vuxenjulbordet?",
-      ["Pepparkakor 🍪", "Chokladfondue 😏", "Julskinka 🐖", "Gravad lax 🐟"],
-      "Chokladfondue 😏"
-    ),
-    Q(
-      "Hur fördriver tomten tiden innan midnatt?",
-      ["Bygger paket 🏗", "Dansar disco 💃", "Pratar med renarna 🦌", "Dricker glögg 🍷"],
-      "Dansar disco 💃"
-    ),
-    Q(
-      "Vad händer om tomten glömmer listan?",
-      ["Alla blir glada 😄", "Han får panik 😱", "Renarna skrattar 🦌", "Alla paket försvinner 🎁"],
-      "Han får panik 😱"
-    ),
-    Q(
-      "Vilken färg gillar tomten på partymössan?",
-      ["Röd ❤️", "Grön 💚", "Glittrig rosa 🌟", "Guld ✨"],
-      "Glittrig rosa 🌟"
-    ),
-    Q(
-      "Vad är tomtens största last?",
-      ["Tid ⏳", "Kakor 🍪", "Hemliga paket 😎", "Rykten 🗣"],
-      "Hemliga paket 😎"
-    ),
-    Q(
-      "Vilken muskelgrupp använder tomten mest på festnätter?",
-      ["Armar 💪", "Ben 🦵", "Rygg 🏋️‍♂️", "Hjärta ❤️"],
-      "Hjärta ❤️"
-    ),
-    Q(
-      "Hur ofta tar tomten selfies med gäster?",
-      ["Aldrig ❌", "Ibland 🤳", "Alltid 😎", "Endast med renar 🦌"],
-      "Ibland 🤳"
-    )
-  ],
-  medium: [
-    Q(
-      "Vad gör tomten om renarna vägrar köra släden?",
-      ["Hotar med kramar 😘", "Erbjuder extra morötter 🥕", "Ringer Uber 🚗", "Bygger snösläde ⛄"],
-      "Erbjuder extra morötter 🥕"
-    ),
-    Q(
-      "Hur hanterar tomten partytrötthet?",
-      ["Dricker glögg 🍷", "Tar powernap 😴", "Hoppar i snön ❄️", "Skriver hemliga listor 📝"],
-      "Tar powernap 😴"
-    ),
-    Q(
-      "Vad händer när tomten blir blyg?",
-      ["Gömmer sig i säcken 🎁", "Dansar extra mycket 💃", "Låter renarna ta över 🦌", "Blir röd i ansiktet ❤️"],
-      "Gömmer sig i säcken 🎁"
-    ),
-    Q(
-      "Vilket är tomtens hemliga vapen på fester?",
-      ["Charm 😏", "Glögg 🍷", "Renar 🦌", "Pepparkakor 🍪"],
-      "Charm 😏"
-    ),
-    Q(
-      "Vad gör tomten om han tappar sitt skägg?",
-      ["Låtsas vara alien 👽", "Får panik 😱", "Lånar renarnas skägg 🦌", "Bygger nytt skägg av glitter ✨"],
-      "Får panik 😱"
-    ),
-    Q(
-      "Hur lockar tomten gäster till efterfesten?",
-      ["Gratis snacks 🍫", "Glögg 🍷", "Mystiska paket 😏", "Renarna dansar 🦌💃"],
-      "Mystiska paket 😏"
-    ),
-    Q(
-      "Vad är tomtens favoritdans?",
-      ["Disco 💃", "Salsa 💃", "Karaoke 💃", "Snowboard 🏂"],
-      "Disco 💃"
-    ),
-    Q(
-      "Vad gör tomten när han vill imponera på gäster?",
-      ["Bygger paketborg 🏰", "Dansar på bordet 💃", "Sjunger opera 🎭", "Föder renar 🦌"],
-      "Dansar på bordet 💃"
-    ),
-    Q(
-      "Hur får tomten alla att skratta?",
-      ["Berättar julskämt 😏", "Dansar salsa 💃", "Bygger paketborg 🏰", "Dricker glögg 🍷"],
-      "Berättar julskämt 😏"
-    ),
-    Q(
-      "Vad är tomtens favoritgodis på fester?",
-      ["Chokladfondue 😏", "Pepparkakor 🍪", "Polkagrisar 🍭", "Mjölkchoklad 🍫"],
-      "Chokladfondue 😏"
-    ),
-    Q(
-      "Vad gör tomten när han är sugen på romantik?",
-      ["Skriver hemliga lappar 📝😏", "Dansar med renar 🦌", "Dricker glögg 🍷", "Bygger paketborg 🏰"],
-      "Skriver hemliga lappar 📝😏"
-    ),
-    Q(
-      "Hur överraskar tomten sina gäster?",
-      ["Med glittrigt glitter ✨", "Med dansmoves 💃", "Med hemliga paket 😏", "Med renarna 🦌"],
-      "Med glittrigt glitter ✨"
-    ),
-    Q(
-      "Vilket är tomtens hemliga partytrick?",
-      ["Osynlighet 👻", "Flygning ✈️", "Teleportering 🌀", "Superstyrka 💪"],
-      "Osynlighet 👻"
-    ),
-    Q(
-      "Vad gör tomten om gästerna inte lyssnar?",
-      ["Hotar med paket 🎁", "Ger kramar 😘", "Trollar lite 🪄", "Dansar salsa 💃"],
-      "Trollar lite 🪄"
-    ),
-    Q(
-      "Vilken färg gillar tomten på sina partystrumpor?",
-      ["Röd ❤️", "Grön 💚", "Glittrig rosa 🌟", "Guld ✨"],
-      "Glittrig rosa 🌟"
-    ),
-    Q(
-      "Hur överlever tomten nattens alla fester?",
-      ["Powernap 😴", "Dricker glögg 🍷", "Dansar disco 💃", "Hoppar i snön ❄️"],
-      "Powernap 😴"
-    ),
-    Q(
-      "Vad gör tomten när han vill smyga?",
-      ["Osynlighet 👻", "Låtsas vara paket 🎁", "Dansar salsa 💃", "Bygger snögubbar ⛄"],
-      "Osynlighet 👻"
-    ),
-    Q(
-      "Hur håller tomten humöret uppe på fest?",
-      ["Chokladfondue 😏", "Pepparkakor 🍪", "Kaffe ☕", "Glögg 🍷"],
-      "Chokladfondue 😏"
-    ),
-    Q(
-      "Vilken superkraft använder tomten när han blir stressad?",
-      ["Teleportering 🌀", "Osynlighet 👻", "Flygning ✈️", "Superstyrka 💪"],
-      "Osynlighet 👻"
-    )
-  ],
-  hard: [
-    Q(
-      "Hur levererar tomten vuxenpaket utan att bli upptäckt?",
-      ["Osynlighet 👻", "Teleportering 🌀", "Flygning ✈️", "Renar 🦌"],
-      "Osynlighet 👻"
-    ),
-    Q(
-      "Vad är tomtens största hemlighet?",
-      ["Alla paket är doppade i glitter ✨", "Han har danslektioner 💃", "Han sjunger opera 🎭", "Han har renar som assistenter 🦌"],
-      "Alla paket är doppade i glitter ✨"
-    ),
-    Q(
-      "Hur lyckas tomten med nattens alla leveranser?",
-      ["Magisk tid ⏳", "Superstyrka 💪", "Flygande renar 🦌", "Teleportering 🌀"],
-      "Magisk tid ⏳"
-    ),
-    Q(
-      "Vilket är tomtens favoritpartyspel?",
-      ["Gömma paket 😏", "Musikstol 💺", "Dansstopp 💃", "Glöggprovning 🍷"],
-      "Gömma paket 😏"
-    ),
-    Q(
-      "Vad gör tomten om han blir kär på festen?",
-      ["Skriver hemliga lappar 📝😏", "Dansar med renar 🦌", "Dricker glögg 🍷", "Bygger paketborg 🏰"],
-      "Skriver hemliga lappar 📝😏"
-    ),
-    Q(
-      "Vilket är tomtens mest pinsamma ögonblick?",
-      ["Tappar skägget 😱", "Ramlade i skorstenen ⛓", "Dansade fel 💃", "Renarna retas 🦌"],
-      "Tappar skägget 😱"
-    ),
-    Q(
-      "Hur vet man att tomten är på fest?",
-      ["Glittrigt glitter ✨", "Kramar 😘", "Mystiska paket 😏", "Renarna dansar 🦌💃"],
-      "Glittrigt glitter ✨"
-    ),
-    Q(
-      "Vad gör tomten om alla gäster går hem tidigt?",
-      ["Tar powernap 😴", "Dansar med renarna 🦌💃", "Dricker glögg 🍷", "Bygger paketborg 🏰"],
-      "Dansar med renarna 🦌💃"
-    ),
-    Q(
-      "Hur smyger tomten förbi vuxna fällor?",
-      ["Osynlighet 👻", "Teleportering 🌀", "Flygning ✈️", "Bygger snögubbar ⛄"],
-      "Osynlighet 👻"
-    ),
-    Q(
-      "Vad gör tomten när han får ett hett tips om julklappar?",
-      ["Sprider ryktet 😏", "Bygger paketborg 🏰", "Dansar disco 💃", "Hoppar i snön ❄️"],
-      "Sprider ryktet 😏"
-    ),
-    Q(
-      "Vilket är tomtens favoritgodis på nattfesten?",
-      ["Chokladfondue 😏", "Pepparkakor 🍪", "Polkagrisar 🍭", "Mjölkchoklad 🍫"],
-      "Chokladfondue 😏"
-    ),
-    Q(
-      "Vad gör tomten när han vill ha lite dramatik?",
-      ["Trollar lite 🪄", "Dansar disco 💃", "Bygger paketborg 🏰", "Dricker glögg 🍷"],
-      "Trollar lite 🪄"
-    ),
-    Q(
-      "Vilket partytrick tar tomten till nästa nivå?",
-      ["Osynlighet 👻", "Teleportering 🌀", "Flygning ✈️", "Superstyrka 💪"],
-      "Osynlighet 👻"
-    ),
-    Q(
-      "Vad gör tomten när han behöver inspiration?",
-      ["Dansar med renarna 🦌💃", "Dricker glögg 🍷", "Skriver hemliga lappar 📝😏", "Bygger paketborg 🏰"],
-      "Skriver hemliga lappar 📝😏"
-    ),
-    Q(
-      "Hur levererar tomten paket utan att bli sedd?",
-      ["Osynlighet 👻", "Teleportering 🌀", "Flygning ✈️", "Renar 🦌"],
-      "Osynlighet 👻"
-    ),
-    Q(
-      "Vilket är tomtens mest festliga ögonblick?",
-      ["Glittrigt glitter ✨", "Kramar 😘", "Mystiska paket 😏", "Dans med renarna 🦌💃"],
-      "Glittrigt glitter ✨"
-    ),
-    Q(
-      "Vad gör tomten när han vill chocka gäster?",
-      ["Trollar 🪄", "Dansar disco 💃", "Bygger paketborg 🏰", "Hoppar i snön ❄️"],
-      "Trollar 🪄"
-    ),
-    Q(
-      "Hur håller tomten energi hela natten?",
-      ["Chokladfondue 😏", "Pepparkakor 🍪", "Kaffe ☕", "Glögg 🍷"],
-      "Chokladfondue 😏"
-    ),
-    Q(
-      "Vilken är tomtens hemliga flirtstrategi?",
-      ["Skriver hemliga lappar 📝😏", "Dansar med renar 🦌", "Dricker glögg 🍷", "Bygger paketborg 🏰"],
-      "Skriver hemliga lappar 📝😏"
-    ),
-    Q(
-      "Vad gör tomten när han vill smyga?",
-      ["Osynlighet 👻", "Låtsas vara paket 🎁", "Dansar salsa 💃", "Bygger snögubbar ⛄"],
-      "Osynlighet 👻"
-    ),
+    medium: [
+      Q(
+        "I vilket land är 'Réveillon' en stor julmiddag på julafton?",
+        ["Frankrike", "USA", "Tyskland", "Sverige"],
+        "Frankrike"
+      ),
+      Q(
+        "Vilket land är kända för att dekorera sina hem med ljus hela december?",
+        ["USA", "Spanien", "Italien", "Sverige"],
+        "USA"
+      ),
+      Q(
+        "Vilket datum firas Saint Lucia-dagen i Sverige?",
+        ["13 december", "1 december", "6 januari", "15 december"],
+        "13 december"
+      ),
+      Q(
+        "Vilket land är känt för 'Julpanettone'?",
+        ["Italien", "Frankrike", "Tyskland", "USA"],
+        "Italien"
+      ),
+      Q(
+        "Vilken nationell julsång har texten 'Stilla natt'?",
+        ["Österrike", "Tyskland", "Sverige", "Frankrike"],
+        "Österrike"
+      ),
+      Q(
+        "I vilket land är 'Secret Santa'-gåvor vanliga?",
+        ["USA", "Sverige", "Tyskland", "Storbritannien"],
+        "USA"
+      ),
+      Q(
+        "Vilket land firar 'Nochebuena' på julafton?",
+        ["Spanien", "Frankrike", "USA", "Tyskland"],
+        "Spanien"
+      ),
+      Q(
+        "Vilken typ av dekoration är typisk i Filippinerna under jul?",
+        ["Parol-lampor", "Julgranskulor", "Ljusslingor", "Kransar"],
+        "Parol-lampor"
+      ),
+      Q(
+        "Vilken nordisk jultradition inkluderar att tända fyra ljus under fyra söndagar före jul?",
+        ["Advent", "Lucia", "Julbock", "Nytt År"],
+        "Advent"
+      ),
+      Q(
+        "Vilket land firar 'Little Christmas' den 6 januari?",
+        ["Irland", "USA", "Sverige", "Frankrike"],
+        "Irland"
+      ),
+      Q(
+        "Vilket land skickade julkort redan från 1840-talet?",
+        ["Storbritannien", "USA", "Tyskland", "Frankrike"],
+        "Storbritannien"
+      ),
+      Q(
+        "Vilket land introducerade adventskalendern?",
+        ["Tyskland", "Österrike", "Sverige", "Danmark"],
+        "Tyskland"
+      ),
+    ],
+    hard: [
+      Q(
+        "Vilket år infördes julfirande officiellt i Sverige?",
+        ["1600-talet", "1700-talet", "1800-talet", "1500-talet"],
+        "1600-talet"
+      ),
+      Q(
+        "Vilket land har traditionen att 'dra julbocken genom byn'?",
+        ["Sverige", "Norge", "Finland", "Danmark"],
+        "Sverige"
+      ),
+      Q(
+        "Vilket land har traditionen med 'Julgröt med mandel', där vinnaren får en present?",
+        ["Sverige", "Finland", "Tyskland", "Österrike"],
+        "Sverige"
+      ),
+      Q(
+        "Vilket land firar jul med fyrverkerier vid midnatt?",
+        ["Filippinerna", "Frankrike", "Sverige", "USA"],
+        "Filippinerna"
+      ),
+      Q(
+        "I vilket land används en stor julkrubba som offentlig dekoration?",
+        ["Italien", "Spanien", "Portugal", "Tyskland"],
+        "Italien"
+      ),
+      Q(
+        "Vilket land kallar tomten 'Père Noël'?",
+        ["Frankrike", "Belgien", "Kanada", "Sverige"],
+        "Frankrike"
+      ),
+      Q(
+        "Vilket land är kända för 'Julbelysning av hus' som tävling?",
+        ["USA", "Tyskland", "Norge", "Sverige"],
+        "USA"
+      ),
+      Q(
+        "I vilket land är det tradition att duka upp en julbastu på julafton?",
+        ["Finland", "Sverige", "Estland", "Norge"],
+        "Finland"
+      ),
+      Q(
+        "I vilket land firar man ‘La Befana’, där en häxa ger barn godis den 6 januari?",
+        ["Italien", "Spanien", "Portugal", "Frankrike"],
+        "Italien"
+      ),
+      Q(
+        "I vilket land kastar man ut julgranen från fönstret efter julfirandet?",
+        ["Irland", "Skottland", "Nederländerna", "Tjeckien"],
+        "Irland"
+      ),
+      Q(
+        "I vilket land dekorerar man julgranen med ‘spökprydnader’ för att skrämma bort onda andar?",
+        ["Filippinerna", "Vietnam", "Kina", "Thailand"],
+        "Filippinerna"
+      ),
+      Q(
+        "I vilket land firar man ‘Julkrubban’ med levande djur och människor på torget som en tradition?",
+        ["Mexiko", "Spanien", "Italien", "Peru"],
+        "Mexiko"
+      ),
     ],
     own: [
+      Q("Hur gammal är Jultomte?", ["36år", "1755år", "163år", "225år"]),
+      Q("Hur mycket väger Jultomte?", ["114kg", "116kg", "118kg", "120kg"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Vilka saker förknippas med jultomten?", [
+        "Röd dräkt",
+        "Skägg",
+        "Släde med renar",
+        "Julklappar",
+      ]),
+      Q("Vilka platser sägs jultomten bo eller resa mellan?", [
+        "Nordpolen",
+        "Barnens hem på julafton",
+        "Tomtens verkstad",
+        "I sagor och berättelser över hela världen",
+      ]),
+      Q("Vilka är vanliga attribut eller följeslagare till jultomten?", [
+        "Renar",
+        "Tomtenissar",
+        "Sleigh bells (bjällror)",
+        "Julgransdekorationer",
+      ]),
+    ],
+  },
+
+  // ---------------------------------------------------
+  // 🔞 JULTOMTE SKOJ
+  adult: {
+    easy: [
       Q(
-        "Hur gammal är Jultomte?",
-        ["36år", "1755år", "163år", "225år"],
-        "1755år"
+        "Vad gör tomten när renarna strejkar?",
+        [
+          "Erbjuder dem glögg 🍷",
+          "Lockar med pepparkakor 🍪",
+          "Hotar med kramar 😘",
+          "Låter dem ta semester 🏖",
+        ],
+        "Låter dem ta semester 🏖"
       ),
+      Q(
+        "Vad gillar tomten mest med vuxenfester?",
+        [
+          "Att dansa salsa 💃",
+          "Gratis snacks 🍫",
+          "Att gömma paket under soffan 😏",
+          "Sjunga karaoke 🎤",
+        ],
+        "Att gömma paket under soffan 😏"
+      ),
+      Q(
+        "Vilken dryck är tomtens guilty pleasure?",
+        ["Ägglikör 🥚", "Mjölk 🥛", "Julmust 🥤", "Kaffe med chili ☕🌶"],
+        "Ägglikör 🥚"
+      ),
+      Q(
+        "Vad gör tomten när han inte hittar sin mössa?",
+        [
+          "Gråter 😭",
+          "Låtsas vara hipster 😎",
+          "Lånar renarnas horn 🦌",
+          "Skriver klagomail ✉️",
+        ],
+        "Låtsas vara hipster 😎"
+      ),
+      Q(
+        "Vad händer om tomten dricker för mycket glögg?",
+        [
+          "Han blir röd i ansiktet ❤️",
+          "Somnar i skorstenen 😴",
+          "Dansar på bordet 💃",
+          "Blir extra snäll 😇",
+        ],
+        "Somnar i skorstenen 😴"
+      ),
+      Q(
+        "Hur håller tomten sig i form?",
+        [
+          "Snowboard 🏂",
+          "Dansar runt granen 🎄",
+          "Lyfter paket 🎁",
+          "Joggar med renar 🦌",
+        ],
+        "Dansar runt granen 🎄"
+      ),
+      Q(
+        "Vad lämnar tomten oftast efter sig på en vuxenfest?",
+        [
+          "Kramar 😘",
+          "Mystiska lappar med hemligheter 📝😏",
+          "Snacks 🍪",
+          "Glittrigt konfetti ✨",
+        ],
+        "Kramar 😘"
+      ),
+      Q(
+        "Vad gör tomten om han blir kär på festen?",
+        [
+          "Skickar brev 💌",
+          "Bjuder på pepparkakor 🍪",
+          "Dansar med renar 🦌",
+          "Ritar hjärtan på paketen ❤️",
+        ],
+        "Bjuder på pepparkakor 🍪"
+      ),
+      Q(
+        "Hur vet man att tomten varit på afterwork?",
+        [
+          "Släden står felvänd 🛷",
+          "Renarna sjunger karaoke 🎤",
+          "Han lämnar glittrigt glitter ✨",
+          "Alla får extra paket 🎁",
+        ],
+        "Han lämnar glittrigt glitter ✨"
+      ),
+      Q(
+        "Vilken är tomtens favoritställning när han gömmer paket under granen?",
+        [
+          "Sittande på knä 🧑‍🎄🍑",
+          "Ligga på sidan 🛷",
+          "Med glitter på ryggen ✨",
+          "Balans på en ren 🦌",
+        ],
+        "Sittande på knä 🧑‍🎄🍑"
+      ),
+      Q(
+        "Vad gillar tomten mest med vuxenjulens efterrätter?",
+        [
+          "Chokladfondue med dopp 🍫😏",
+          "Pepparkakor med sprit 🥂",
+          "Gravad lax med extra krydda 🐟",
+          "Julmust med hemlig twist 🥤",
+        ],
+        "Chokladfondue med dopp 🍫😏"
+      ),
+      Q(
+        "Hur flirtar tomten på vuxenfesten?",
+        [
+          "Med hemliga lappar 📝😏",
+          "Med glittrigt glitter ✨",
+          "Med paketbyten 🎁😉",
+          "Med dansmoves 💃🦌",
+        ],
+        "Med hemliga lappar 📝😏"
+      ),
+    ],
+
+    medium: [
+      Q(
+        "Vad gör tomten om renarna vägrar köra släden?",
+        [
+          "Hotar med kramar 😘",
+          "Erbjuder extra morötter 🥕",
+          "Ringer Uber 🚗",
+          "Bygger snösläde ⛄",
+        ],
+        "Erbjuder extra morötter 🥕"
+      ),
+      Q(
+        "Hur hanterar tomten partytrötthet?",
+        [
+          "Dricker glögg 🍷",
+          "Tar powernap 😴",
+          "Hoppar i snön ❄️",
+          "Skriver hemliga listor 📝",
+        ],
+        "Tar powernap 😴"
+      ),
+      Q(
+        "Vad händer när tomten blir blyg?",
+        [
+          "Gömmer sig i säcken 🎁",
+          "Dansar extra mycket 💃",
+          "Låter renarna ta över 🦌",
+          "Blir röd i ansiktet ❤️",
+        ],
+        "Gömmer sig i säcken 🎁"
+      ),
+      Q(
+        "Vilket är tomtens hemliga vapen på fester?",
+        ["Charm 😏", "Glögg 🍷", "Renar 🦌", "Pepparkakor 🍪"],
+        "Charm 😏"
+      ),
+      // ---- nya medium frågor med snusk & Kamasutra ----
+      Q(
+        "Vilken ställning föredrar tomten när han spelar vuxna paketlekar?",
+        [
+          "Missionären med julklappsvridning 🎁😏",
+          "På rygg med glitter ✨",
+          "Stående vid granen 🎄",
+          "Balans på renarnas rygg 🦌",
+        ],
+        "Missionären med julklappsvridning 🎁😏"
+      ),
+      Q(
+        "Vad är tomtens hemliga glädje under vuxenjulfesten?",
+        [
+          "Glidmedel på pepparkakorna 😏",
+          "Dans med renar 🦌💃",
+          "Extra sprit i glöggen 🍷",
+          "Bygger paketborg 🏰",
+        ],
+        "Glidmedel på pepparkakorna 😏"
+      ),
+      Q(
+        "Hur lockar tomten gäster till den privata efterfesten?",
+        [
+          "Med mystiska paket och hemliga lekar 🎁😉",
+          "Med dansmoves 💃",
+          "Med glittrigt glitter ✨",
+          "Med extra chokladfondue 😏",
+        ],
+        "Med mystiska paket och hemliga lekar 🎁😉"
+      ),
+      Q(
+        "Varför fastnar inte jultomten i skorstenen?",
+        [
+          "Han använder magiskt glidmedel 🛷✨",
+          "Renarna puttar på honom 🦌💨",
+          "Han krymper med julmagi 🎄🪄",
+          "Han teleporteras in i huset 🌀",
+        ],
+        "Han använder magiskt glidmedel 🛷✨"
+      ),
+      Q(
+        "Vad gör jultomten när han vill spetsa vuxenfesten?",
+        [
+          "Bjuder på extra stark glögg 🍷🔥",
+          "Hittar på Kamasutra-lekar 🎎",
+          "Startar en jul-swingerklubb 🎄💃🕺",
+          "Smyger runt med paketlekar 😏",
+        ],
+        "Hittar på Kamasutra-lekar 🎎"
+      ),
+      Q(
+        "Vilket är jultomtens hemliga trick för att roa vuxna gäster?",
+        [
+          "Glidmedel på släden 🛷✨",
+          "Organiserar en paket-gangbang 🎁😏",
+          "Dansar naken runt granen 💃🎄",
+          "Serverar chokladfondue med extra krydda 🍫🌶",
+        ],
+        "Organiserar en paket-gangbang 🎁😏"
+      ),
+    ],
+
+    hard: [
+      Q(
+        "Hur levererar tomten vuxenpaket utan att bli upptäckt?",
+        ["Osynlighet 👻", "Teleportering 🌀", "Flygning ✈️", "Renar 🦌"],
+        "Osynlighet 👻"
+      ),
+      Q(
+        "Vad är tomtens största hemlighet?",
+        [
+          "Alla paket är doppade i glitter ✨",
+          "Han har danslektioner 💃",
+          "Han sjunger opera 🎭",
+          "Han har renar som assistenter 🦌",
+        ],
+        "Alla paket är doppade i glitter ✨"
+      ),
+      Q(
+        "Hur lyckas tomten med nattens alla leveranser?",
+        [
+          "Magisk tid ⏳",
+          "Superstyrka 💪",
+          "Flygande renar 🦌",
+          "Teleportering 🌀",
+        ],
+        "Magisk tid ⏳"
+      ),
+      // ---- nya hard frågor med snusk & Kamasutra ----
+      Q(
+        "Vilken hemlig julfavorit har tomten under natten?",
+        [
+          "Kamasutra-inspirerad paketlek 🎁🛷😏",
+          "Glittrigt glitter över hela rummet ✨",
+          "Renarnas privata danslektion 🦌💃",
+          "Chokladfondue med extra krydda 🍫",
+        ],
+        "Kamasutra-inspirerad paketlek 🎁🛷😏"
+      ),
+      Q(
+        "Vad gör tomten om gästerna har olika preferenser?",
+        [
+          "Anpassar lekar och paket enligt önskemål 😏",
+          "Bygger separata pakethörnor 🎁",
+          "Dansar med alla renarna 🦌💃",
+          "Sprider glittrigt glitter ✨",
+        ],
+        "Anpassar lekar och paket enligt önskemål 😏"
+      ),
+      Q(
+        "Hur levererar tomten sina mest vågade paket?",
+        [
+          "Med hemlig glidmedels-lek 🎁🛷",
+          "Osynligt 👻",
+          "Teleportering 🌀",
+          "På renryggen 🦌",
+        ],
+        "Med hemlig glidmedels-lek 🎁🛷"
+      ),
+    ],
+
+    own: [
+      Q("Hur gammal är Jultomte?", ["36år", "1755år", "163år", "225år"]),
+      Q("Hur mycket väger Jultomte?", ["114kg", "116kg", "118kg", "120kg"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Hur lång är Jultomtens dräkt?", ["60cm", "64cm", "68cm", "72cm"]),
+      Q("Vilka saker förknippas med jultomten?", [
+        "Röd dräkt",
+        "Skägg",
+        "Släde med renar",
+        "Julklappar",
+      ]),
+      Q("Vilka platser sägs jultomten bo eller resa mellan?", [
+        "Nordpolen",
+        "Barnens hem på julafton",
+        "Tomtens verkstad",
+        "I sagor och berättelser över hela världen",
+      ]),
+      Q("Vilka är vanliga attribut eller följeslagare till jultomten?", [
+        "Renar",
+        "Tomtenissar",
+        "Sleigh bells (bjällror)",
+        "Julgransdekorationer",
+      ]),
     ],
   },
 };
@@ -1184,54 +1482,64 @@ let currentSet = [];
 let timerInterval;
 let timeLeft = 10;
 
+// ===============================
+// ===== START KATEGORI =====
+// ===============================
 document.querySelectorAll(".category").forEach((btn) => {
   btn.onclick = () => {
     const bank = questionBanks[btn.dataset.cat];
+
     currentSet = [
-      ...pick(bank.easy, 4),
+      ...pick(bank.easy, 3),
       ...pick(bank.medium, 3),
-      ...pick(bank.hard, 2),
       ...pick(bank.own, 1),
+      ...pick(bank.hard, 3),
     ];
+
     state.score = 0;
     state.answers = [];
     state.qIndex = 0;
-    showPage(4);
+
+    showPage(5);
     nextQuestion();
   };
 });
 
+// ===============================
+// ===== TIMER =====
+// ===============================
 function startTimer() {
   timeLeft = 10;
   timerEl.innerText = timeLeft;
   clearInterval(timerInterval);
+
   timerInterval = setInterval(() => {
     timeLeft--;
     timerEl.innerText = timeLeft;
+
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      handleAnswer(null);
+      handleAnswer(null, currentSet[state.qIndex]);
     }
   }, 1000);
 }
 
+// ===============================
+// ===== NÄSTA FRÅGA =====
+// ===============================
 function nextQuestion() {
   if (state.qIndex >= currentSet.length) return showResult();
+
   const q = currentSet[state.qIndex];
   questionEl.innerText = q.q;
   answersEl.innerHTML = "";
 
-  // Slumpa svarsalternativen
-  const shuffledOptions = shuffle([...q.options]);
+  const shuffled = shuffle([...q.options]);
 
-  shuffledOptions.forEach((opt) => {
+  shuffled.forEach((opt) => {
     const btn = document.createElement("button");
     btn.innerText = opt;
-
-    btn.onclick = () => {
-      handleAnswer(opt, q); // skicka frågan också
-    };
-
+    btn.onclick = () => handleAnswer(opt, q);
     answersEl.appendChild(btn);
   });
 
@@ -1239,107 +1547,133 @@ function nextQuestion() {
   startTimer();
 }
 
+// ===============================
+// ===== SVARSHANTERING =====
+// ===============================
 function handleAnswer(selected, q) {
   clearInterval(timerInterval);
 
-  let isCorrect = selected === q.correct;
+  const isOwn = !q.correct; // own-frågor saknar correct
 
-  // Anpassad logik för own-frågor
-  let correctToShow = q.correct;
-  let categoryType = "normal";
-  if (q.options.includes("1755år") && q.options.includes("36år")) {
-    categoryType = "own";
-    if (selected === "1755år") {
-      correctToShow = "36år";
-      isCorrect = false;
-    } else if (selected === "36år") {
-      correctToShow = "1755år";
-      isCorrect = false;
-    }
-  }
+  // ===== TIMEOUT =====
+  if (selected === null) {
+    const fakeCorrect = isOwn ? shuffle([...q.options])[0] : q.correct;
 
-  state.answers.push({
-    selected,
-    correct: correctToShow,
-    isCorrect,
-    category: categoryType,
-  });
-
-  // Direkt feedback för alla utom own-kategorin
-  if (categoryType !== "own") {
     answersEl.querySelectorAll("button").forEach((btn) => {
-      if (btn.innerText === q.correct) {
+      if (btn.innerText === fakeCorrect) {
         btn.style.backgroundColor = "green";
-        btn.style.color = "white";
-      } else if (btn.innerText === selected) {
-        btn.style.backgroundColor = "red";
         btn.style.color = "white";
       }
       btn.disabled = true;
     });
 
-    const feedback = document.createElement("div");
-    feedback.className = "feedback";
-    feedback.style.marginTop = "8px";
-    feedback.style.fontWeight = "bold";
-    feedback.style.color = isCorrect ? "green" : "red";
-    // feedback.innerText = isCorrect ? "✅ Rätt!" : `❌ Fel! Rätt svar: ${q.correct}`;
-    answersEl.appendChild(feedback);
-
-    if (isCorrect) state.score++;
+    state.answers.push({
+      selected: null,
+      correct: fakeCorrect,
+      isCorrect: false,
+      category: isOwn ? "own" : "timeout",
+    });
 
     state.qIndex++;
-
-    save();
-
-    // Vänta lite innan nästa fråga
     setTimeout(nextQuestion, 500);
-  } else {
-    // För own-frågor kör som tidigare utan feedback
-    if (isCorrect) state.score++;
-    state.qIndex++;
-    save();
-    nextQuestion();
+    return;
   }
+
+  // ===============================
+  // 🔥 OWN-KATEGORI (ALLTID FEL)
+  // ===============================
+  if (isOwn) {
+    const fakeCorrect = shuffle(q.options.filter((o) => o !== selected))[0];
+
+    answersEl.querySelectorAll("button").forEach((btn) => {
+      if (btn.innerText === selected) {
+        btn.style.backgroundColor = "red";
+        btn.style.color = "white";
+      } else if (btn.innerText === fakeCorrect) {
+        btn.style.backgroundColor = "green";
+        btn.style.color = "white";
+      }
+      btn.disabled = true;
+    });
+
+    state.answers.push({
+      selected,
+      correct: fakeCorrect,
+      isCorrect: false,
+      category: "own",
+    });
+
+    // ❌ Ingen poäng
+    state.qIndex++;
+    setTimeout(nextQuestion, 500);
+    return;
+  }
+
+  // ===============================
+  // ✅ NORMAL KATEGORI
+  // ===============================
+  const isCorrect = selected === q.correct;
+
+  answersEl.querySelectorAll("button").forEach((btn) => {
+    if (btn.innerText === q.correct) {
+      btn.style.backgroundColor = "green";
+      btn.style.color = "white";
+    } else if (btn.innerText === selected) {
+      btn.style.backgroundColor = "red";
+      btn.style.color = "white";
+    }
+    btn.disabled = true;
+  });
+
+  state.answers.push({
+    selected,
+    correct: q.correct,
+    isCorrect,
+    category: "normal",
+  });
+
+  if (isCorrect) state.score++;
+
+  state.qIndex++;
+  setTimeout(nextQuestion, 500);
 }
 
+// ===============================
+// ===== RESULTAT =====
+// ===============================
 function showResult() {
-  showPage(5);
+  showPage(6);
+
   scoreText.innerText = `Du fick ${state.score} av ${currentSet.length} rätt`;
 
   let imgSrc = "";
-  if (state.score === currentSet.length)
+  let message = ""; // för texten
+
+  if (state.score === 10) {
     imgSrc =
       "https://www.riksbank.se/iv-images/publishedmedia/44j91vowc7wepjl8i0ta/1000-kronossedel-specimen-fram.png";
-  else if (state.score >= 7)
-    imgSrc =
-      "https://static.partyking.org/fit-in/1300x0/products/original/jultomte-choklad-staniol-89987-1.jpg";
-  else if (state.score >= 4)
-    imgSrc =
-      "https://upload.wikimedia.org/wikipedia/commons/d/de/Candy-Cane-Classic.jpg";
-  else
-    imgSrc =
-      "https://ih1.redbubble.net/image.3246509715.3954/st,small,507x507-pad,600x600,f8f8f8.jpg";
+    message = "Fantastiskt! 💰";
+  } else if (state.score >= 7) {
+    imgSrc = "assets/tomtebild.jpg";
+    new Audio("assets/tomte.mp3").play();
+    message = "Vinsten är Chokladtomte 🍫";
+  } else if (state.score >= 4) {
+    imgSrc = "assets/Candy.jpg";
+    new Audio("assets/polka.mp3").play();
+    message = "Vinsten är Julstav 🎁";
+  } else {
+    imgSrc = "assets/betterLuck.jpg";
+    new Audio("assets/forlust.mp3").play();
+    message = "Fråga Jultomte 🎅 om en till chans✨";
+  }
 
-  resultImage.innerHTML = `<div style="display:flex;justify-content:center;margin-bottom:16px;"><img src="${imgSrc}" alt="Resultatbild" style="max-width:100%;max-height:150px;border-radius:16px;" /></div>`;
+  // Bild
+  resultImage.innerHTML = `
+    <div style="display:flex;justify-content:center;margin-bottom:16px;">
+      <img src="${imgSrc}" style="max-height:150px;border-radius:16px;" />
+    </div>
+  `;
 
-  reviewEl.innerHTML = "";
-  state.answers.forEach((a, index) => {
-    const d = document.createElement("div");
-    d.className = "review-item";
-    d.innerHTML = `
-      <div class="${a.isCorrect ? "correct" : "wrong"}">
-        Ditt svar: ${a.selected ?? "Inget"}
-      </div>
-      <div>Rätt svar: ${a.correct}</div>
-    `;
-    reviewEl.appendChild(d);
-  });
+  // Text
+  resultText.textContent = message;
 }
-
-btnEnd.onclick = () => {
-  localStorage.clear();
-  location.reload();
-};
-
-showPage(state.page);

@@ -2,7 +2,10 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
     <title>Jultomtes Quiz</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -11,18 +14,38 @@
 
     <main id="app">
       <section class="page" id="page-start">
-        <h1>🎅 Jultomtes Quiz</h1>
+        <h1>🎅 Jultomtes Quiz 🎅</h1>
         <button type="button" class="primary" id="btnStart">Fortsätt</button>
       </section>
 
-      <section class="page hidden" id="page-password">
-        <h2>Ange Jultomtes lösenord</h2>
-        <input type="password" id="passwordInput" placeholder="Lösenord" />
-        <p id="passwordError" class="error hidden">Fel lösenord</p>
+      <section class="page hidden" id="page-spel">
+        <h1>🎅 Jultomtes Quiz 🎅</h1>
+        <p>1. Välj ett kategori</p>
+        <p>
+          2. Besvara 10 frågor, <br>(varje fråga har 4 svarsalternativ, <br> bara ett
+          alternativ är rätt)
+        </p>
+        <p>3. Vinsten:</p>
+        <ul>
+          <li>0 – 3 Rätt = Ingen vinst</li>
+          <li>4 – 6 Rätt = Julstav</li>
+          <li>7 – 9 Rätt = Chokladtomte</li>
+          <li>10 Rätt = 500 kr</li>
+        </ul>
+
+        <p><strong>Priset för en runda är 50 kr</strong></p>
+
+        <!-- 👇 KLICKBAR LÄNK -->
+        <p>
+          <a href="#" id="linkTerms">Terms and Conditions</a>
+        </p>
+
+        <button class="primary" id="btnToPassword">
+          Acceptera och fortsätt
+        </button>
       </section>
 
       <section class="page hidden" id="page-terms">
-        
         <h1>Spelvillkor & Policy</h1>
         <p>
           Det här quizet är ett spel skapat för underhållning, utmaning och nöje
@@ -37,20 +60,16 @@
           korrekt. Att klara quizet innebär dock <strong>inte</strong> någon
           garanti för vinst.
         </p>
-
+        
         <p>Säkerställ att din enhet och internetuppkoppling fungerar</p>
-
-        <button class="primary" id="btnToPassword">
-          Fortsätt till Jultomtes Quiz
-        </button>
-
+        
         <h2>Ansvar & teknik</h2>
         <p>
           Vi kan tyvärr inte ta ansvar för tekniska problem som ligger utanför
           vår kontroll, till exempel uppkopplingsfel, buggar eller
           kompatibilitetsproblem.
         </p>
-
+        
         <p>
           Quizet tillhandahålls i befintligt skick. I den utsträckning som
           svensk lag tillåter ansvarar vi inte för direkta eller indirekta
@@ -70,7 +89,7 @@
           Vi ansvarar inte för hur vinster används eller för eventuella skatter
           eller avgifter som kan bli aktuella för vinnaren.
         </p>
-
+        
         <p>Eventuella tvister avgörs på plats.</p>
         <p>
           Som en bonus <em>kan</em> det finnas möjlighet att vinna ett pris –
@@ -82,9 +101,17 @@
         </p>
         <hr />
         <p>Genom att spela quizet godkänner du villkoren ovanför.</p>
-        <button class="primary" id="btnToPassword">
-          Fortsätt till Jultomtes Quiz
+        
+        <button class="primary" id="btnBackToSpel">
+          Acceptera och fortsätt
         </button>
+
+ </section>
+
+      <section class="page hidden" id="page-password">
+        <h2>Ange Jultomtes lösenord</h2>
+        <input type="password" id="passwordInput" placeholder="Lösenord" />
+        <p id="passwordError" class="error hidden">Fel lösenord</p>
       </section>
 
       <section class="page hidden" id="page-category">
@@ -96,9 +123,11 @@
           </button>
           <button class="category" data-cat="music">🎶 Julmusik</button>
           <button class="category" data-cat="movies">🎬 Julfilmer</button>
-          <button class="category" data-cat="julIVarlden">🎬 Jul i Världen</button>
+          <button class="category" data-cat="julIVarlden">
+            🎬 Jul i Världen
+          </button>
           <button class="category adult" data-cat="adult">
-            🔞 Jultomte 18+
+            🔞 Jultomte Skoj
           </button>
         </div>
       </section>
@@ -115,8 +144,7 @@
       <section class="page hidden" id="page-result">
         <div id="resultImage"></div>
         <h2 id="scoreText"></h2>
-        <div id="review"></div>
-        <button class="primary" id="btnEnd">Avsluta Quiz</button>
+        <p id="resultText"></p>
       </section>
     </main>
 
