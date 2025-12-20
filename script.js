@@ -1509,7 +1509,7 @@ document.querySelectorAll(".category").forEach((btn) => {
 // ===== TIMER =====
 // ===============================
 function startTimer() {
-  timeLeft = 10;
+  timeLeft = 15;
   timerEl.innerText = timeLeft;
   clearInterval(timerInterval);
 
@@ -1521,7 +1521,7 @@ function startTimer() {
       clearInterval(timerInterval);
       handleAnswer(null, currentSet[state.qIndex]);
     }
-  }, 1000);
+  }, 1500);
 }
 
 // ===============================
@@ -1575,7 +1575,7 @@ function handleAnswer(selected, q) {
     });
 
     state.qIndex++;
-    setTimeout(nextQuestion, 500);
+    setTimeout(nextQuestion, 1000);
     return;
   }
 
@@ -1605,7 +1605,7 @@ function handleAnswer(selected, q) {
 
     // ❌ Ingen poäng
     state.qIndex++;
-    setTimeout(nextQuestion, 500);
+    setTimeout(nextQuestion, 1000);
     return;
   }
 
@@ -1635,7 +1635,7 @@ function handleAnswer(selected, q) {
   if (isCorrect) state.score++;
 
   state.qIndex++;
-  setTimeout(nextQuestion, 500);
+  setTimeout(nextQuestion, 1000);
 }
 
 // ===============================
