@@ -55,7 +55,7 @@ btnBackToSpel.onclick = () => showPage(1);
 
 // ===== LÖSENORD LOGIK =====
 // ===== AUTOMATISK LÖSENORDSKONTROLL =====
-const correctPassword = "11";
+const correctPassword = "84623725";
 
 passwordInput.addEventListener("input", () => {
   if (passwordInput.value === correctPassword) {
